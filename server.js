@@ -14,6 +14,16 @@ var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
 
 var token = "EAABziFHDyI8BAGP1V7P0skYxA7QX9oJsN0TepSPRqZCwmbzDma54VDj9MDuVCFs8y6Iv1J1vLy8p2TqoPPM2IUP6I23YLAegLPqMV90HQpNkZCGma6B7TabXQN7ysuhbIYUCziHsNkCyt5ZAryejKFI8yB8XeilrSJGwqRnEQZDZD";
 
+
+var commands = "Here is a list of available commands:\
+                \ \
+                " + 
+                " \
+                \ Graph: equation\
+                \ Simplify: equation\
+                \ Derivative: equation\
+                \ Complex: equation\
+                "
 // Function to send plain message to the bot
 function replyToSender(sender, text) {
   messageData = {
@@ -66,7 +76,7 @@ function replyToSenderImage(sender, image) {
 
 // Function to check if input is numeric
 function isNumeric(n) {
-  
+
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
@@ -118,7 +128,8 @@ app.post('/webhook/', function (req, res) {
       } 
 
       // Function to evaluate basic math operations
-      else if (isNumeric(text[0] || text[0].toLowerCase() == "x" || text[0].toLowerCase() == "y")) {
+      else if (isNumeric(text[0]) || text[0].toLowerCase() == "x" || text[0].toLowerCase() == "y") {
+
 
         replyToSender(sender, "Answer Is: " + math.eval(text));
       }
@@ -126,9 +137,17 @@ app.post('/webhook/', function (req, res) {
       // Function to graph an equation
       else if (action[0].toLowerCase() == "graph"){
 
-        url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ action[1] +"&eqn2_color=2&eqn2_eqn=&eqn3_color=3&eqn3_eqn=&eqn4_color=4&eqn4_eqn=&eqn5_color=5&eqn5_eqn=&eqn6_color=6&eqn6_eqn=&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
+        url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ action[1].trim() +"&eqn2_color=2&eqn2_eqn=&eqn3_color=3&eqn3_eqn=&eqn4_color=4&eqn4_eqn=&eqn5_color=5&eqn5_eqn=&eqn6_color=6&eqn6_eqn=&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
     
-        replyToSenderImage(sender, url);
+        replyToSender(sender, "Here is your graph for: " + action[1]);
+        replyToSenderImage(sender, url.trim());
+      }
+
+      // Function to get help with commands.
+      else if (text.toLowerCase() == "help") {
+
+        replyToSender(sender, commands);
+
       }
 
       else {
@@ -144,9 +163,16 @@ app.post('/webhook/', function (req, res) {
         apiai.end();
       }
 
+    } 
+
+    else if (event.postback) {
+
+            console.log("Postback received: " + JSON.stringify(event.postback));
     }
   }
+
   res.sendStatus(200);
+
 });
 
 app.get('/', function (req, res) {
