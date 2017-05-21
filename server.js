@@ -14,8 +14,8 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-// Set default port. Otherwise, 8080 is default
-var port = process.env.PORT || 8080;
+// Set default port. Otherwise, 8000 is default
+var port = process.env.PORT || 8000;
 
 
 // Token for Messenger API
@@ -105,7 +105,13 @@ function checkVar(vari, char) {
 // Check for unwanted errors from users
 function checkError(str, char) {
 
-  return (str[1].trim() == "" || validate(str[1]) == true && checkVar(str[1].trim(), char) == false);
+  return (str[1].trim() == "" || validate(str[1]) == true && checkVar(str[1], char) == false);
+}
+
+// Check for unwanted errors when querying an image
+function checkErrorImg(str) {
+
+  return (str[1].trim() == "" || validate(str[1]) == true);
 }
 
 // Function to replace all specific characters in a string
@@ -129,16 +135,19 @@ app.post('/webhook/', function (req, res) {
   for (i = 0; i < messaging_events.length; i++) {
 
     event = req.body.entry[0].messaging[i];
+
     sender = event.sender.id;
 
     if (event.message && event.message.text) {
       
       text = event.message.text;
-      var action = text.split(":");
 
-      var apiai = apiaiApp.textRequest(text, {
+      action = event.message.text.split(":");
+
+      apiai = apiaiApp.textRequest(text, {
           sessionId: 'natural_language'
         });
+      
 
       // Function to simplify equations and fractions
       if (action[0].toLowerCase().trim() == "simplify") {
@@ -190,13 +199,17 @@ app.post('/webhook/', function (req, res) {
         if (validate(text) == false) {
 
           replyToSender(sender, "Answer Is: " + math.eval(text));
+
+        } else {
+
+          replyToSender(sender, "This is not allowed");
         }
       }
 
       // Function to graph an equation
       else if (action[0].toLowerCase().trim() == "graph"){
 
-        if (checkError(action[1], "x")){
+        if (checkErrorImg(action)){
 
           replyToSender(sender, "This is not allowed");
 
