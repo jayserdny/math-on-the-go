@@ -116,8 +116,8 @@ function checkErrorImg(str) {
 }
 
 // Function to replace all specific characters in a string
-String.prototype.replaceAll = function(str1, str2, ignore) 
-{
+String.prototype.replaceAll = function(str1, str2, ignore) {
+
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),
       (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 } 
@@ -133,6 +133,7 @@ app.get('/webhook/', function (req, res) {
 app.post('/webhook/', function (req, res) {
 
   messaging_events = req.body.entry[0].messaging;
+
   for (i = 0; i < messaging_events.length; i++) {
 
     event = req.body.entry[0].messaging[i];
@@ -150,64 +151,119 @@ app.post('/webhook/', function (req, res) {
         });
       
 
-      // Function to simplify equations and fractions
+      // To simplify equations and fractions
       if (action[0].toLowerCase().trim() == "simplify") {
 
-        if (checkError(action, "x")) {
-
-          replyToSender(sender, "This is not allowed");
-
-        } else {
+        try {
 
           replyToSender(sender, "Answer Is: " + math.simplify(action[1]));
 
+        } catch(err){
+
+          replyToSender(sender, "I can't simplify this :(. Please try the following one: 10/4")
         }
       
       }
 
-      // Function to compute complex numbers
+      // To compute complex numbers
       else if (action[0].toLowerCase().trim() == "complex") {
 
-        if (checkError(action, "i")) {
+        try {
 
-          replyToSender(sender, "This is not allowed");
+          replyToSender(sender, "Answer Is: " + math.complex(action[1]));
 
-        } else {
+        } catch(err) {
 
-        replyToSender(sender, "Answer Is: " + math.complex(action[1]));
+          replyToSender(sender, "This is not a complex equation. Try this one: 2i + 5i");
+
+        }
 
       }
 
-    }
+      // To calculate LCM from TWO numbers
+      else if (action[0].toLowerCase().trim() == "lcm") {
 
-      // Function to get the derivative of an equation
-      else if (action[0].toLowerCase().trim() == "derivative") {
+        try {
 
-        if (checkError(action, "x")) {
+          input = action[1].trim();
 
-          replyToSender(sender, "This is not allowed");
+          lcm = input.split(",");
+          
+          replyToSender(sender, "The LCM Is: " + math.lcm(lcm[0],lcm[1]));
 
-        } else {
+        } catch(err) {
 
-        replyToSender(sender, "Answer Is: " + math.derivative(action[1], "x"));
-
-      } 
-    }
-
-      // Function to evaluate basic math operations
-      else if (isNumeric(text[0])) {
-
-        if (validate(text) == false) {
-
-          replyToSender(sender, "Answer Is: " + math.eval(text));
-
-        } else {
-
-          replyToSender(sender, "This is not allowed");
+          replyToSender(sender, "Can't calculate the LCM with given values. Please, try the following: 4, 6")
         }
       }
 
-      // Function to graph an equation
+      // To calculate GCD from TWO numbers. 
+      else if (action[0].toLowerCase().trim() == "gcd") {
+
+        try {
+
+          txt = action[1].trim();
+
+          values = txt.split(",");
+
+          replyToSender(sender, "The GCD Is: " + math.gcd(values[0],values[1]));
+
+        } catch(err) {
+
+          replyToSender(sender, "Can't calculate the GCD with given values. Please, try the following: 4, 6")
+        }
+      }
+
+      // To calculate Extended Euclidean algorithm from TWO numbers. 
+      else if (action[0].toLowerCase().trim() == "xgcd") {
+
+        try {
+
+          txt = action[1].trim();
+
+          values = txt.split(",");
+
+          replyToSender(sender, "The Extended Euclidean Algorithm Is: " + math.xgcd(values[0],values[1]));
+
+        } catch(err) {
+
+          replyToSender(sender, "Can't calculate the Extended Euclidean Algorithm with given values. Please, try the following: 4, 6")
+        }
+      }
+
+
+      // To get the derivative of an equation
+      else if (action[0].toLowerCase().trim() == "derivate") {
+
+        if (checkError(action, "x")) {
+
+          try {
+
+            replyToSender(sender, "The Derivative Is: " + math.derivative(action[1], "x"));
+
+          } catch(err) {
+
+            replyToSender(sender, "You can't derivate this function. Try this one: 2x^2 + 5x + 2")
+
+          }
+        }
+
+      }
+
+      // To evaluate basic math operations
+      else if (isNumeric(text[0])) {
+
+        try {
+
+          replyToSender(sender, "Answer Is: " + math.eval(text));
+
+        } catch(err) {
+
+          replyToSender(sender, "I can't compute this equation. Instead, try this: 15 * 4 + 2");
+        }
+      }
+
+      // To graph an equation
       else if (action[0].toLowerCase().trim() == "graph"){
 
         if (checkErrorImg(action)){
@@ -218,15 +274,18 @@ app.post('/webhook/', function (req, res) {
 
           var equation = action[1].replaceAll("+", "%2B");
           var fEquation = equation.replaceAll("^", "%5E").trim();
+          var eq = fEquation.replaceAll("(", "%28").trim();
+          var eq1 = eq.replaceAll(")", "%29").trim();
+          var eq2 = eq1.replaceAll(" ", "%20").trim();
 
-          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ fEquation +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
+          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ eq2.trim() +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
           replyToSender(sender, "Here is your graph for: " + action[1]);
           replyToSenderImage(sender, url.trim());
 
         }
       }
 
-      // Function to get help with commands.
+      // To get help with commands.
       else if (text.toLowerCase() == "help") {
 
         replyToSender(sender, commands);
