@@ -1,20 +1,28 @@
+// Externals Libraries
+
 var app = require('express')();
 var bodyParser  = require('body-parser');
 var request = require('request');
 var math = require('mathjs');
+var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
 
+
+// Setup for express js
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+
+// Set default port. Otherwise, 8080 is default
 var port = process.env.PORT || 8080;
 
-var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
 
+// Token for Messenger API
 var token = "EAABziFHDyI8BAGP1V7P0skYxA7QX9oJsN0TepSPRqZCwmbzDma54VDj9MDuVCFs8y6Iv1J1vLy8p2TqoPPM2IUP6I23YLAegLPqMV90HQpNkZCGma6B7TabXQN7ysuhbIYUCziHsNkCyt5ZAryejKFI8yB8XeilrSJGwqRnEQZDZD";
 
 
+// Commands available for the bot
 var commands = "Here is a list of available commands:\
                 \ \
                 " + 
@@ -96,11 +104,20 @@ function checkVar(vari, char) {
 
 // Check for unwanted errors from users
 function checkError(str, char) {
+
   return (str[1].trim() == "" || validate(str[1]) == true && checkVar(str[1].trim(), char) == false);
 }
 
+// Function to replace all specific characters in a string
+String.prototype.replaceAll = function(str1, str2, ignore) 
+{
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),
+      (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+} 
+
+
 app.get('/webhook/', function (req, res) {
-  if (req.query['hub.verify_token'] === '=l]}NGdntMZMJQSE4qm5orPKq$x9Pf') {
+  if (req.query['hub.verify_token'] === '=l]}NGdntMZMJQSE4qm5orPKq$x9Pf') { // Validate token from Facebook's webhooks.
     res.send(req.query['hub.challenge']);
   }
   res.send('Error, wrong validation token');
@@ -185,7 +202,10 @@ app.post('/webhook/', function (req, res) {
 
         } else {
 
-          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ action[1].trim() +"&eqn2_color=2&eqn2_eqn=&eqn3_color=3&eqn3_eqn=&eqn4_color=4&eqn4_eqn=&eqn5_color=5&eqn5_eqn=&eqn6_color=6&eqn6_eqn=&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
+          var equation = action[1].replaceAll("+", "%2B");
+          var fEquation = equation.replaceAll("^", "%5E").trim();
+
+          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ fEquation +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
           replyToSender(sender, "Here is your graph for: " + action[1]);
           replyToSenderImage(sender, url.trim());
 
