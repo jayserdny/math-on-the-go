@@ -27,5 +27,32 @@ Password: Testapp123
 
 Then go to messages and open the only message there :)
 
+##Commands
+
+Here is a list of examples of available commands for this bot:
+
+**To graph a function:**
+graph: x^2
+
+**To simplify a fraction or equation:**
+simplify: 10/4
+
+**To solve complex numbers:**
+complex: 2i + 5i - 4 + 12
+
+**To derivate an equation:**
+derivate: x^2 + 5x + 2
+
+**To get LCM between two numbers (_BETA, does not work with more than 2 numbers_):**
+lcm: 4,6
+
+**To get GCD between two numbers (_BETA, does not work with more than 2 numbers_):**
+gcd: 4,6
+
+**To get Extended Euclidean Algorithm between two numbers (_BETA, does not work with more than 2 numbers_):**
+xgcd: 4,6
+
+To do a simple Math operation, you don't need any command, just tell it right away. For example: 5+5*6
+
 ## What's next for Math on the fly
 I am planning to extend the application by allowing users to upload images of Math problems to solve them without typing them into the chat.
