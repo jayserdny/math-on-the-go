@@ -17,8 +17,15 @@ I am proud of developing my first Facebook Messenger bot. I never thought that t
 I have learned how to configure a Facebook Messenger bot by doing this app and how to use matjs library. I also learned that the limit of programming is yourself. If you think you can't do something, is because you have not tried hard.
 
 ##Beta Testers?
-If you want to beta test this bot, please send me your Facebook's email to: jayser.mendez@stu.bcc.cuny.edu
+If you want to beta test this bot, please send me your Facebook username's id to: jayser.mendez@stu.bcc.cuny.edu
 I still need to wait for Facebook to approve this bot to be used by everyone.
+
+Or, login to Facebook with the following credentials:
+
+Email: mathtestapp@outlook.com
+Password: Testapp123
+
+Then go to messages and open the only message there :)
 
 ## What's next for Math on the fly
 I am planning to extend the application by allowing users to upload images of Math problems to solve them without typing them into the chat.
