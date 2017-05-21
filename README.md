@@ -14,7 +14,7 @@ Trying to differentiate each case where the user wants to do a specific thing. O
 I am proud of developing my first Facebook Messenger bot. I never thought that this application can help a lot of person who are struggling in Math and can simplify the way to check an answer.
 
 ## What I learned
-I have learned how to configure a Facebook Messenger bot by doing this app and how to use matjs library. I also learned that the limit of programming is yourself. If you think you can't do something, is because you have not tried hard.
+I have learned how to configure a Facebook Messenger bot by doing this app and how to use mathjs library. I also learned that the limit of programming is yourself. If you think you can't do something, is because you have not tried hard.
 
 ##Beta Testers?
 If you want to beta test this bot, please send me your Facebook username's id to: jayser.mendez@stu.bcc.cuny.edu
@@ -49,7 +49,7 @@ lcm: 4,6
 **To get GCD between two numbers (_BETA, does not work with more than 2 numbers_):**
 gcd: 4,6
 
-**To get Extended Euclidean Algorithm between two numbers (_BETA, does not work with more than 2 numbers_):**
+**To get Extended Euclidean Algorithm between two numbers:**
 xgcd: 4,6
 
 To do a simple Math operation, you don't need any command, just tell it right away. For example: 5+5*6
