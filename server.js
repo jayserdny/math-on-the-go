@@ -6,6 +6,9 @@ var request = require('request');
 var math = require('mathjs');
 var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
 
+if (process.env.NODE_ENV !== 'production') {
+require('dotenv').config()
+}
 
 // Setup for express js
 app.use(bodyParser.json());
@@ -13,10 +16,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
-// Set default port. Otherwise, 8000 is default
-var port = process.env.PORT || 8000;
-
+var http = require("http"),
+    port = process.env.PORT || 1881;  
 
 // Token for Messenger API
 var token = "EAABziFHDyI8BAGP1V7P0skYxA7QX9oJsN0TepSPRqZCwmbzDma54VDj9MDuVCFs8y6Iv1J1vLy8p2TqoPPM2IUP6I23YLAegLPqMV90HQpNkZCGma6B7TabXQN7ysuhbIYUCziHsNkCyt5ZAryejKFI8yB8XeilrSJGwqRnEQZDZD";
@@ -258,10 +259,12 @@ app.post('/webhook/', function (req, res) {
 
 });
 
+
+
 app.get('/', function (req, res) {
   res.sendStatus(200);
 });
 
-app.listen(port, function () {
-  console.log('The webhook is running on port ' + port);
+app.listen(port, function(){
+  console.log("Express server listening on port %d in %s mode", port, app.settings.env);
 });
