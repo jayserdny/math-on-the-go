@@ -1,5 +1,5 @@
 ## Inspiration
-Most of the time you do not really want to leave your conversations to do your homework and you do not want to download an app to check if your math answer if correct. So, I decide to develop a solution for you :) Now you can do your math inside Facebook Messenger.
+We love using our social media. We love text to our friends. Imagine having a friend who you can send your Math problem and get the answer in seconds? It would be amazing. All of this without leaving social media and without installing any other application.
 
 ## What it does
 This amazing app helps you to either quick calculate math problems or confirm if your answer is correct. You just need to start a conversation with a messenger bot, and it will help you giving you a list of commands you can use.
@@ -8,7 +8,7 @@ This amazing app helps you to either quick calculate math problems or confirm if
 I building this application in Javascript using Express.js. To solve Math problems, this application uses mathjs library which makes everything work smooth.
 
 ## Challenges I ran into
-Trying to differentiate each case where the user wants to do a specific thing. Of course, the limit is the sky, or the galaxy...
+Trying to differentiate each case where the user wants to do a specific thing. Of course, the limit is the sky, or the galaxy... Also, it was not easy to set up the OCR to recognize text images and calculate the answer right away.
 
 ## Accomplishments that I'm proud of
 I am proud of developing my first Facebook Messenger bot. I never thought that this application can help a lot of person who are struggling in Math and can simplify the way to check an answer.
@@ -51,6 +51,11 @@ gcd: 4,6
 
 **To get Extended Euclidean Algorithm between two numbers:**
 xgcd: 4,6
+
+**To convert from an unit to another unit:**
+convert: 5 m to km
+
+**BETA: Try to capture an image with an only simple math operation. For example, something simple as 5+5 and the program will tell you the answer. I am working to support more operations with the image recognition.**
 
 To do a simple Math operation, you don't need any command, just tell it right away. For example: 5+5*6
 
