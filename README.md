@@ -63,3 +63,6 @@ To do a simple Math operation, you don't need any command, just tell it right aw
 
 ## What's next for Math on the fly
 Solve more operations using image recognition! Stay tuned!
+
+## Privacy Policy
+[Privacy Policy](https://www.google.com)
