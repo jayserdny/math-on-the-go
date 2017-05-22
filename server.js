@@ -5,16 +5,37 @@ var bodyParser  = require('body-parser');
 var request = require('request');
 var math = require('mathjs');
 var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
+var express = require('express');
+
+var Tesseract = require('tesseract.js');
+var request = require('request');
+var fs = require('file-system');
+var http = require('http');
+var download = require('download-file');
+var fileUrl = require('file-url');
+
+var filename = '/public/pic.png';
+ 
+var writeFile = fs.writeFile(filename);
+
+var resultsStr = "2+2";
+
 
 if (process.env.NODE_ENV !== 'production') {
 require('dotenv').config()
 }
 
 // Setup for express js
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+var path = require('path');
+app.use(express.static(path.join(__dirname, 'private')));
+app.use('/public', express.static(path.join(__dirname + '/private')));
+app.use('/test', express.static(path.join(__dirname + '/app')));
 
 var http = require("http"),
     port = process.env.PORT || 1881;  
@@ -84,6 +105,8 @@ function replyToSenderImage(sender, image) {
      });
 };
 
+
+
 // Function to check if input is numeric
 function isNumeric(n) {
 
@@ -139,6 +162,63 @@ app.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
 
     sender = event.sender.id;
+
+    try {
+
+    image = event.message.attachments[0].payload.url;
+
+    if (image) {
+      //Checking if there are any image attachments 
+      if(event.message.attachments[0].type === "image"){
+        var imageURL = image;
+
+        var options = {
+          directory: "./private/",
+          filename: "image.png"
+        }
+
+        var results = "";
+ 
+        download(imageURL, options, function(err){
+          if (err) {
+            throw err
+          } else {
+            console.log("meow");
+            var url = "https://api.ocr.space/parse/imageurl?apikey=39b5a3f40d88957&url=https://mathserver.herokuapp.com/public/image.png";
+            request({
+              url: url,
+              json: true
+              }, function (error, response, body) {
+
+                if (!error && response.statusCode === 200) {
+                  try {
+                    results = body.ParsedResults[0].ParsedText;
+                    var resultsStr = results.toString();
+                    var final = resultsStr.trim();
+                    try {
+                      replyToSender(sender, "Answer Is: " + math.eval(final));
+                    } catch (e) {
+
+                      replyToSender(sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
+                      }
+                      
+                   
+                  } catch (e) { console.log(e)}
+                    }
+                } else {
+                  console.log("error");
+                }
+              })
+            }
+          
+        });
+ 
+      }
+    }
+
+    } catch(e){}
+    //Checking for attachments
+    
 
     if (event.message && event.message.text) {
       
@@ -197,7 +277,7 @@ app.post('/webhook/', function (req, res) {
         }
       }
 
-      // To calculate GCD from TWO numbers. 
+      // To calculate GCD from TWO numbers
       else if (action[0].toLowerCase().trim() == "gcd") {
 
         try {
@@ -214,7 +294,7 @@ app.post('/webhook/', function (req, res) {
         }
       }
 
-      // To calculate Extended Euclidean algorithm from TWO numbers. 
+      // To calculate Extended Euclidean algorithm from TWO numbers 
       else if (action[0].toLowerCase().trim() == "xgcd") {
 
         try {
@@ -230,6 +310,23 @@ app.post('/webhook/', function (req, res) {
           replyToSender(sender, "Can't calculate the Extended Euclidean Algorithm with given values. Please, try the following: 4, 6")
         }
       }
+
+      // To convert units 
+      else if (action[0].toLowerCase().trim() == "convert") {
+
+        try {
+          
+          units = action[1].toString();
+          console.log(units);
+
+          replyToSender(sender, "Answer Is: " + math.eval(units));
+
+        } catch(err) {
+
+          replyToSender(sender, "Can't convert this kind of unit. Please, try the following: 2 inch, cm")
+        }
+      }
+
 
 
       // To get the derivative of an equation
