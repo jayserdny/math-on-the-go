@@ -57,6 +57,8 @@ convert: 5 m to km
 
 **BETA: Try to capture an image with an only simple math operation. For example, something simple as 5+5 and the program will tell you the answer. I am working to support more operations with the image recognition.**
 
+**To get all this command on the chat, just write help**
+
 To do a simple Math operation, you don't need any command, just tell it right away. For example: 5+5*6
 
 ## What's next for Math on the fly
