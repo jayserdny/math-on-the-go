@@ -4,7 +4,7 @@ var app = require('express')();
 var bodyParser  = require('body-parser');
 var request = require('request');
 var math = require('mathjs');
-var apiaiApp = require('apiai')(API_KEY);
+var apiaiApp = require('apiai')("API_KEY");
 var express = require('express');
 var request = require('request');
 var fs = require('file-system');
@@ -159,6 +159,7 @@ app.post('/webhook/', function (req, res) {
     if (image) {
       //Checking if there are any image attachments 
       if(event.message.attachments[0].type === "image"){
+
         var imageURL = image;
 
         var options = {
@@ -169,10 +170,13 @@ app.post('/webhook/', function (req, res) {
         var results = "";
  
         download(imageURL, options, function(err){
+
           if (err) {
+
             throw err
+
           } else {
-            console.log("meow");
+
             var url = "https://api.ocr.space/parse/imageurl?apikey=API_KEY&url=https://mathserver.herokuapp.com/public/image.png";
             request({
               url: url,
@@ -180,20 +184,25 @@ app.post('/webhook/', function (req, res) {
               }, function (error, response, body) {
 
                 if (!error && response.statusCode === 200) {
+
                   try {
+                    
                     results = body.ParsedResults[0].ParsedText;
                     var resultsStr = results.toString();
                     var final = resultsStr.trim();
+
                     try {
+
                       replyToSender(sender, "Answer Is: " + math.eval(final));
+
                     } catch (e) {
 
                       replyToSender(sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
+
                       }
-                      
-                   
+
                   } catch (e) { console.log(e)}
-                    }
+                    
                 } else {
                   console.log("error");
                 }
