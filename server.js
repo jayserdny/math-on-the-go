@@ -32,6 +32,25 @@ var http = require("http"),
 // Token for Messenger API
 var token = "API_KEY";
 
+// Commands available for the bot
+var commands = [
+  "Here are all the available commands and right to it, a simple example: ",
+  "",
+  "Simplify: 10/4",
+  "",
+  "Lcm: 4,6",
+  "",
+  "Gcd: 4,6",
+  "",
+  "Xgcd: 4,6",
+  "",
+  "Derivate: 4x^2 + 5x",
+  "",
+  "Graph: x^2 + x^3",
+  "",
+  "Convert: 5 m to km"
+].join("\n");
+
 // Function to send plain message to the bot
 function replyToSender(sender, text) {
   messageData = {
@@ -364,6 +383,13 @@ app.post('/webhook/', function (req, res) {
           replyToSenderImage(sender, url.trim());
 
         }
+      }
+      
+      // To get help with commands.
+      else if (text.toLowerCase() == "help") {
+
+        replyToSender(sender, commands);
+
       }
 
       else {
