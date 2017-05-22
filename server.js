@@ -4,7 +4,7 @@ var app = require('express')();
 var bodyParser  = require('body-parser');
 var request = require('request');
 var math = require('mathjs');
-var apiaiApp = require('apiai')("2c4b35419a17431fa55cc9298201cc5c");
+var apiaiApp = require('apiai')("API_KEY");
 var express = require('express');
 var request = require('request');
 var fs = require('file-system');
@@ -30,19 +30,7 @@ var http = require("http"),
     port = process.env.PORT || 1881;  
 
 // Token for Messenger API
-var token = "EAABziFHDyI8BAGP1V7P0skYxA7QX9oJsN0TepSPRqZCwmbzDma54VDj9MDuVCFs8y6Iv1J1vLy8p2TqoPPM2IUP6I23YLAegLPqMV90HQpNkZCGma6B7TabXQN7ysuhbIYUCziHsNkCyt5ZAryejKFI8yB8XeilrSJGwqRnEQZDZD";
-
-
-// Commands available for the bot
-var commands = "Here is a list of available commands:\
-                \ \
-                " + 
-                " \
-                \ Graph: equation\
-                \ Simplify: equation\
-                \ Derivative: equation\
-                \ Complex: equation\
-                "
+var token = "API_KEY";
 
 // Function to send plain message to the bot
 function replyToSender(sender, text) {
@@ -136,7 +124,7 @@ String.prototype.replaceAll = function(str1, str2, ignore) {
 
 
 app.get('/webhook/', function (req, res) {
-  if (req.query['hub.verify_token'] === '=l]}NGdntMZMJQSE4qm5orPKq$x9Pf') { // Validate token from Facebook's webhooks.
+  if (req.query['hub.verify_token'] === 'MESSENGER_TOKEN') { // Validate token from Facebook's webhooks.
     res.send(req.query['hub.challenge']);
   }
   res.send('Error, wrong validation token');
@@ -177,7 +165,7 @@ app.post('/webhook/', function (req, res) {
 
           } else {
 
-            var url = "https://api.ocr.space/parse/imageurl?apikey=39b5a3f40d88957&url=https://mathserver.herokuapp.com/public/image.png";
+            var url = "https://api.ocr.space/parse/imageurl?apikey=API_KEY&url=https://mathserver.herokuapp.com/public/image.png";
             request({
               url: url,
               json: true
@@ -376,13 +364,6 @@ app.post('/webhook/', function (req, res) {
           replyToSenderImage(sender, url.trim());
 
         }
-      }
-
-      // To get help with commands.
-      else if (text.toLowerCase() == "help") {
-
-        replyToSender(sender, commands);
-
       }
 
       else {
