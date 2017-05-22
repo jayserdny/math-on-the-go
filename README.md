@@ -60,4 +60,4 @@ convert: 5 m to km
 To do a simple Math operation, you don't need any command, just tell it right away. For example: 5+5*6
 
 ## What's next for Math on the fly
-I am planning to extend the application by allowing users to upload images of Math problems to solve them without typing them into the chat.
+Solve more operations using image recognition! Stay tuned!
