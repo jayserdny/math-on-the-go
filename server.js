@@ -147,10 +147,10 @@ var messageData = {
     "greeting":[
         {
         "locale":"default",
-        "text":"Greeting text for default local !"
+        "text":"Welcome to Math on the Fly! Solve your Math with me <3 !"
         }, {
         "locale":"en_US",
-        "text":"Greeting text for en_US local !"
+        "text":"Welcome to Math on the Fly! Solve your Math with me <3 !"
         }
     ]};
 request({
