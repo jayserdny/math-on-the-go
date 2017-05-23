@@ -65,4 +65,4 @@ To do a simple Math operation, you don't need any command, just tell it right aw
 Solve more operations using image recognition! Stay tuned!
 
 ## Privacy Policy
-[Privacy Policy](https://www.google.com)
+[Privacy Policy](http://htmlpreview.github.io/?https%3A%2F%2Fraw.githubusercontent.com%2Fjayserdny%2Fmath-on-the-go%2Fgh-pages%2Fprivacy-policy.html)
