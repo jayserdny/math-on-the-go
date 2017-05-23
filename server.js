@@ -279,6 +279,11 @@ var messageData =
             ]
             },
             {
+            "type":"postback",
+            "title":"Get Started",
+            "payload":"getstarted"
+            },
+            {
             "type":"web_url",
             "title":"Visit website ",
             "url":"https://devpost.com/software/math-on-the-fly",
@@ -307,7 +312,6 @@ function (error, response, body) {
 });
 
 }
-
 
 function setupGetStartedButton(res){
 var messageData = {
