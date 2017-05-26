@@ -1,26 +1,29 @@
 // Externals Libraries
 
-var app = require('express')();
-var bodyParser  = require('body-parser');
-var request = require('request');
-var math = require('mathjs');
-var apiaiApp = require('apiai')(process.env.API_AI_API);
-var express = require('express');
-var request = require('request');
-var fs = require('file-system');
-var http = require('http');
-var download = require('download-file');
-var algebra = require('algebra.js');
-var Algebrite = require('algebrite');
-var async = require('async');
-var tools = require("./quickReplies.js");
-var menu = require("./menu.js");
-var variables = require("./variables.js");
+var app = require('express')(),
+    bodyParser  = require('body-parser'),
+    request = require('request'),
+    math = require('mathjs'),
+    apiaiApp = require('apiai')(process.env.API_AI_API),
+    express = require('express'),
+    request = require('request'),
+    fs = require('file-system'),
+    http = require('http'),
+    download = require('download-file'),
+    algebra = require('algebra.js'),
+    Algebrite = require('algebrite'),
+    menu = require("./menu.js"),
+    variables = require("./variables.js"),
+    functions = require("./functions.js"),
+    replyToSender = functions.replyToSender,
+    replyToSenderImage = functions.replyToSenderImage,
+    path = require('path'),
+    http = require("http"),
+    port = process.env.PORT || 1881;
 
-var wait = require('wait-promise');
 
 if (process.env.NODE_ENV !== 'production') {
-require('dotenv').config()
+  require('dotenv').config();
 }
 
 // Setup for express js
@@ -30,285 +33,37 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-var path = require('path');
 app.use(express.static(path.join(__dirname, 'private')));
 app.use('/public', express.static(path.join(__dirname + '/private')));
 
-var http = require("http"),
-    port = process.env.PORT || 1881;  
 
-// Token for Messenger API
-var token = process.env.FACEBOOK_TOKEN;
+app.get('/setup',function(req,res){
 
+    functions.setupGetStartedButton(res);
+    functions.setupPersistentMenu(res);
+    functions.setupGreetingText(res);
+});
 
-// Commands available for the bot
-var commands = [
-  "Here are all the available commands and right to it, a simple example: ",
-  "",
-  "Simplify: 10/4",
-  "",
-  "Lcm: 4,6",
-  "",
-  "Gcd: 4,6",
-  "",
-  "Xgcd: 4,6",
-  "",
-  "Derivate: 4x^2 + 5x",
-  "",
-  "Graph: x^2 + x^3",
-  "",
-  "Convert: 5 m to km"
-].join("\n");
-
-// Function to send plain message to the bot
-function replyToSender(sender, text) {
-  messageData = {
-    text : text
-  };
-
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token : token },
-    method: 'POST',
-    json: {
-       recipient: { id : sender },
-       message: messageData,
-    }
-  }, function(error, response, body) {
-       if (error) {
-         console.log('Error sending message: ', error);
-       } else if (response.body.error) {
-         console.log('Error: ', response.body.error);
-       }
-     });
-};
-
-// Function to retrive image from bot
-function replyToSenderImage(sender, image) {
-
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token : token },
-    method: 'POST',
-    json: {
-       recipient: { id : sender },
-       message: {
-        attachment: {
-          type: "image",
-          payload: {
-            url: image
-          }
-        }
-      }
-    }
-  }, function(error, response, body) {
-       if (error) {
-         console.log('Error sending message: ', error);
-       } else if (response.body.error) {
-         console.log('Error: ', response.body.error);
-       }
-     });
-};
-
-
-
-// Function to check if input is numeric
-function isNumeric(n) {
-
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
-// Check if the string just have numbers of characters
-function validate(strValue) {
-
-  var objRegExp  = /^[a-zA-Z\u00C0-\u00ff\s]+$/;
-  return objRegExp.test(strValue);
-
-}
-
-// Check if character exists in a given string
-function checkVar(vari, char) {
-  return vari.indexOf(char) > -1;
-}
-
-// Check for unwanted errors from users
-function checkError(str, char) {
-
-  return (str[1].trim() == "" || validate(str[1]) == true && checkVar(str[1], char) == false);
-}
-
-// Check for unwanted errors when querying an image
-function checkErrorImg(str) {
-
-  return (str[1].trim() == "" || validate(str[1]) == true);
-}
 
 // Function to replace all specific characters in a string
 String.prototype.replaceAll = function(str1, str2, ignore) {
 
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),
-      (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-}
-
-// Greeting message for first time interaction with the bot.
-// TODO: Multi-locale
-function setupGreetingText(res){
-
-  request({
-
-    url: 'https://graph.facebook.com/v2.6/me/messenger_profile',
-    qs: { access_token : token },
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    form: variables.greetingMessage
-  },
-  function (error, response, body) {
-
-    if (!error && response.statusCode == 200) {
-        // Print out the response body
-        res.send(body);
-
-    } else { 
-        // TODO: Handle errors
-        res.send(body);
-    }
-  });
-
-}
-
-function quickReplies(res, buttons) {
-
-  request({
-
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token : token },
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    form: buttons
-  },
-  function (error, response, body) {
-
-    if (!error && response.statusCode == 200) {
-        console.log(response);
-
-    } else { 
-        console.log(body);
-    }
-  });
-}
-
-// Persistent Menu For Messenger
-function setupPersistentMenu(res){
-
-request({
-    url: "https://graph.facebook.com/v2.6/me/messenger_profile",
-    qs: { access_token : token },
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    form: menu.persistentMenu
-},
-function (error, response, body) {
-    if (!error && response.statusCode == 200) {
- 
-        console.log(response);
-
-    } else { 
-
-        console.log(body);
-    }
-});
-
-}
-
-function setupGetStartedButton(res){
-var messageData = {
-        "get_started":{
-            "payload":"getstarted"
-        }
-};
-// Start the request
-request({
-    url: "https://graph.facebook.com/v2.6/me/messenger_profile",
-    qs: { access_token : token },
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    form: messageData
-},
-function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        // Print out the response body
-        console.log(response);
-
-    } else { 
-        // TODO: Handle errors
-        console.log(body);
-    }
-});
-}
-      
-
-app.get('/setup',function(req,res){
-
-    setupGetStartedButton(res);
-    setupPersistentMenu(res);
-    setupGreetingText(res);
-});
-
-
-function receivedPostback(res,event) {
-    var senderID = event.sender.id;
-    var recipientID = event.recipient.id;
-    var timeOfMessage = event.timestamp;
-    var payload = event.postback.payload;
-    var replies = tools;
-
-    switch(payload)
-    {
-        case 'getstarted':
-            
-            quickReplies(res, replies.getStartedEx(senderID)); 
-            break;
-
-        case 'GRAPH_COMMAND':
-            quickReplies(res, replies.graphEx(senderID)); 
-            break;
-
-        case 'SIMPLIFY_COMMAND':
-            quickReplies(res, replies.simplifyEx(senderID));
-            break;
-
-        case 'DERIVATE_COMMAND':
-            quickReplies(res, replies.derivateEx(senderID));
-            break;
-
-        case 'GCD_COMMAND':
-            quickReplies(res, replies.gcdEx(senderID));
-            break;
-
-        case 'XGCD_COMMAND':
-            quickReplies(res, replies.xgcdEx(senderID));
-            break;
-
-        case 'INTEGRAL_COMMAND':
-            quickReplies(res, replies.integralEx(senderID));
-            break;
-
-
-        default :
-            quickReplies(res, replies.getStartedEx(senderID));
-        break;
-    }
-
-
+    (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
 
-
+// Validate token from Facebook's webhooks.
 app.get('/webhook/', function (req, res) {
-  if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) { // Validate token from Facebook's webhooks.
+
+  if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) { 
+
     res.send(req.query['hub.challenge']);
+
   }
+
   res.send('Error, wrong validation token');
+
 });
 
 app.post('/webhook/', function (req, res) {
@@ -405,7 +160,7 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.simplify(action[1]).toString());
+          replyToSender(sender, "Answer Is: " + Algebrite.simplify(action[1]).toString());
 
         } catch(err){
 
@@ -529,8 +284,30 @@ app.post('/webhook/', function (req, res) {
         }
       }
 
+      else if (action[0].toLowerCase().trim() == "defintegrate") {
+
+        var data = action[1].trim();
+        var data1 = data.split(",");
+        var equation = data1[0].toString();
+        var eqfinal = equation.trim();
+        var upper = data[1].trim();
+        var lower = data[2].trim();
+        console.log(data1);
+        console.log(equation);
+        x = "x";
+        y = "y";
+
+        try {
+          replyToSender(sender, "The answer is: " + Algebrite.defint(eqfinal,y,0,x,lower,upper));
+        } catch (err) {
+
+          console.log(err);
+        }
+        
+      }
+
       // To evaluate basic math operations
-      else if (isNumeric(text[0])) {
+      else if (functions.isNumeric(text[0])) {
 
         try {
 
@@ -545,7 +322,7 @@ app.post('/webhook/', function (req, res) {
       // To graph an equation
       else if (action[0].toLowerCase().trim() == "graph"){
 
-        if (checkErrorImg(action)){
+        if (functions.checkErrorImg(action)){
 
           replyToSender(sender, "This is not allowed");
 
@@ -583,8 +360,23 @@ app.post('/webhook/', function (req, res) {
       // To get help with commands.
       else if (text.toLowerCase() == "help") {
 
-        replyToSender(sender, commands);
+        replyToSender(sender, variables.commands());
 
+      }
+
+      else if (action[0].toLowerCase().trim() == "tobinary") {
+
+        var integer = action[1].trim();
+        var binary = functions.toBinary(integer);
+
+        try {
+          
+          replyToSender(sender, action[1] + " to binary is " + binary);
+
+        } catch (err) {
+
+          replyToSender(sender, "Can't be converted");
+        }
       }
 
       else {
@@ -612,33 +404,44 @@ app.post('/webhook/', function (req, res) {
           switch (payload) {
 
             case "getstarted":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "GRAPH_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "SIMPLIFY_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "DERIVATE_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "GCD_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "XGCD_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
             case "INTEGRAL_COMMAND":
-              receivedPostback(res, event);
+              functions.receivedPostback(res, event);
               break;
 
+            case 'LCM_COMMAND':
+              functions.receivedPostback(res, event);
+              break;
+
+            case 'SOLVE_COMMAND':
+              functions.receivedPostback(res, event);
+              break;
+
+            case 'TOBINARY_COMMAND':
+              functions.receivedPostback(res, event);
+              break;
 
             default:
               
