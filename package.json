@@ -9,7 +9,10 @@
   "author": "Jayser Mendez",
   "license": "",
   "dependencies": {
+    "algebra.js": "^0.2.6",
+    "algebrite": "^1.0.2",
     "apiai": "^4.0.2",
+    "async": "^2.4.1",
     "body-parser": "^1.15.1",
     "download-file": "^0.1.5",
     "express": "4.15.3",
@@ -17,7 +20,8 @@
     "forever": "^0.15.3",
     "mathjs": "^3.13.1",
     "path": "^0.12.7",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "wait-promise": "^0.4.1"
   },
   "devDependencies": {
     "dotenv": "^4.0.0"
