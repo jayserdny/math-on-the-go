@@ -7,7 +7,7 @@ module.exports.persistentMenu =
 
           "call_to_actions":[
               {
-                "title":"Topics",
+                "title":"Help/Topics",
                 "type":"nested",
                 "call_to_actions":[
                     {
@@ -15,7 +15,7 @@ module.exports.persistentMenu =
                       "type":"nested",
                       "call_to_actions":[
                           {
-                          "title":"Graph",
+                          "title":"Graph Equation",
                             "type":"postback",
                             "payload": "GRAPH_COMMAND"
                           },
@@ -26,15 +26,20 @@ module.exports.persistentMenu =
                           },
                           
                           {
-                            "title":"GCD",
+                            "title":"Find GCD",
                             "type":"postback",
                             "payload": "GCD_COMMAND"
                           },
                           {
-                            "title":"LCM",
+                            "title":"Find LCM",
                             "type":"postback",
                             "payload": "LCM_COMMAND"
                           },
+                          {
+                          	"title":"Solve for x",
+                            "type":"postback",
+                            "payload": "SOLVE_COMMAND"
+                          }
                       ],
                     },
                     {
@@ -42,12 +47,12 @@ module.exports.persistentMenu =
                       "type":"nested",
                       "call_to_actions":[
                         {
-                            "title":"Derivatives",
+                            "title":"Compute Derivatives",
                             "type":"postback",
                             "payload": "DERIVATE_COMMAND"
                           },
                           {
-                            "title":"Integrals",
+                            "title":"Compute Integrals",
                             "type":"postback",
                             "payload": "INTEGRAL_COMMAND"
                           },
@@ -59,19 +64,19 @@ module.exports.persistentMenu =
                       ]
                     },
                     {
-                      "title":"Test 2",
+                      "title":"Computer Science",
                       "type":"nested",
                       "call_to_actions":[
                         {
-                            "title":"XGCD",
+                            "title":"Extended Euclidean Algorithm",
                             "type":"postback",
                             "payload": "XGCD_COMMAND"
                           },
                           
                           {
-                            "title":"Convert",
+                            "title":"Interger to Binary",
                             "type":"postback",
-                            "payload": "CONVERT_COMMAND"
+                            "payload": "TOBINARY_COMMAND"
                         },
                       ]
                     }
