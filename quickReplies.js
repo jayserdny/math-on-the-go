@@ -69,6 +69,9 @@ module.exports = {
 		return buttons;
 	},
 
+	// Algebra quick replies
+
+	// Quick replies for graph command
 	graphEx: function(recipient) {
 		var buttons = {
   			"recipient":{
@@ -87,7 +90,7 @@ module.exports = {
       				},
       				{
         				"content_type":"text",
-        				"title":"Graph:: x^2 + 3x",
+        				"title":"Graph: x^2 + 3x",
         				"payload":"GRAPH_EXAMPLE1"
       				},
       				{
@@ -107,6 +110,7 @@ module.exports = {
 		return buttons;
 	},
 
+	// Quick replies for simplify command
 	simplifyEx: function(recipient) {
 		var buttons = {
   			"recipient":{
@@ -114,7 +118,7 @@ module.exports = {
   			},
 
   			"message":{
-    			"text":"With the simplify command you can make fractions simples :D\n" +
+    			"text":"With the simplify command you can make any equation or fraction simpler :D\n" +
               	"\n" +
               	"Try a quick example ;) :",
     			"quick_replies":[
@@ -125,7 +129,7 @@ module.exports = {
       				},
       				{
         				"content_type":"text",
-        				"title":"Simplify: 512/24",
+        				"title":"Simplify: a*b+a*c",
         				"payload":"SIMPLIFY_EXAMPLE1"
       				},
       				{
@@ -145,44 +149,7 @@ module.exports = {
 		return buttons;
 	},
 
-	derivateEx: function(recipient) {
-		var buttons = {
-  			"recipient":{
-   				"id": recipient
-  			},
-
-  			"message":{
-    			"text":"With the derivate command, you can derivate derivate any equation you want :O\n" +
-              	"\n" +
-              	"Try a quick example ;) :",
-    			"quick_replies":[
-      				{
-        				"content_type":"text",
-        				"title":"Derivate: 2x^2",
-        				"payload":"DERIVATIVE_EXAMPLE0"
-      				},
-      				{
-        				"content_type":"text",
-        				"title":"Derivate: 2x^2 + 5x",
-        				"payload":"DERIVATIVE_EXAMPLE1"
-      				},
-      				{
-        				"content_type":"text",
-        				"title":"Derivate: x",
-        				"payload":"DERIVATIVE_EXAMPLE2"
-      				},
-      				{
-        				"content_type":"text",
-        				"title":"Derivate: x^x",
-        				"payload":"DERIVATIVE_EXAMPLE3"
-      				}
-    			]
-  			}
-		};
-
-		return buttons;
-	},
-
+	// Quick replies for GCD command
 	gcdEx: function(recipient) {
 		var buttons = {
   			"recipient":{
@@ -221,36 +188,37 @@ module.exports = {
 		return buttons;
 	},
 
-	xgcdEx: function(recipient) {
+	// Quick replies for lcm command
+	lcmEx: function(recipient) {
 		var buttons = {
   			"recipient":{
    				"id": recipient
   			},
 
   			"message":{
-    			"text":"With the XGCD command, you can find the Extended Euclidean Algorithm between 2 numbers. (Y)\n" +
+    			"text":"With the LCM command, you can find the LCM between 2 numbers. Sadly I can't handle more :(\n" +
               	"\n" +
-              	"Try a quick example ;) :",
+              	"Try a quick example 😏 :",
     			"quick_replies":[
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 9,3",
-        				"payload":"XGCD_EXAMPLE0"
+        				"title":"Lcm: 9,3",
+        				"payload":"LCM_EXAMPLE0"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 4,5",
-        				"payload":"XGCD_EXAMPLE1"
+        				"title":"Lcm: 4,5",
+        				"payload":"LCM_EXAMPLE1"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 36,12",
-        				"payload":"XGCD_EXAMPLE2"
+        				"title":"Lcm: 36,12",
+        				"payload":"LCM_EXAMPLE2"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 9,5",
-        				"payload":"XGCD_EXAMPLE3"
+        				"title":"Lcm: 9,5",
+        				"payload":"LCM_EXAMPLE3"
       				}
     			]
   			}
@@ -259,36 +227,78 @@ module.exports = {
 		return buttons;
 	},
 
-	xgcdEx: function(recipient) {
+	solveEx: function(recipient) {
 		var buttons = {
   			"recipient":{
    				"id": recipient
   			},
 
   			"message":{
-    			"text":"With the XGCD command, you can find the Extended Euclidean Algorithm between 2 numbers. (Y)\n" +
+    			"text":"With the solve command you can solve ANY equation for X 😻\n" +
+              	"\n" +
+              	"Give a try 💁 :",
+    			"quick_replies":[
+      				{
+        				"content_type":"text",
+        				"title":"Solve: x + 2 = 0",
+        				"payload":"SOLVE_EXAMPLE0"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Solve: x^2 - 2 = 0",
+        				"payload":"SOLVE_EXAMPLE1"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Solve: x^2 = 4",
+        				"payload":"SOLVE_EXAMPLE2"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Solve: x^3 = 9",
+        				"payload":"SOLVE_EXAMPLE3"
+      				}
+    			]
+  			}
+		};
+
+		return buttons;
+	},
+
+	// Algebra Quick replies end.
+
+	// Quick replies for Calculus
+
+	derivateEx: function(recipient) {
+		var buttons = {
+  			"recipient":{
+   				"id": recipient
+  			},
+
+  			"message":{
+    			"text":"With the derivate command, you can derivate any equation you want :O\n" +
               	"\n" +
               	"Try a quick example ;) :",
     			"quick_replies":[
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 9,3",
-        				"payload":"XGCD_EXAMPLE0"
+        				"title":"Derivate: 2x^2",
+        				"payload":"DERIVATIVE_EXAMPLE0"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 4,5",
-        				"payload":"XGCD_EXAMPLE1"
+        				"title":"Derivate: 2x^2 + 5x",
+        				"payload":"DERIVATIVE_EXAMPLE1"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 36,12",
-        				"payload":"XGCD_EXAMPLE2"
+        				"title":"Derivate: x",
+        				"payload":"DERIVATIVE_EXAMPLE2"
       				},
       				{
         				"content_type":"text",
-        				"title":"Xgcd: 9,5",
-        				"payload":"XGCD_EXAMPLE3"
+        				"title":"Derivate: x^x",
+        				"payload":"DERIVATIVE_EXAMPLE3"
       				}
     			]
   			}
@@ -327,6 +337,88 @@ module.exports = {
         				"content_type":"text",
         				"title":"Integrate: cos(2x)",
         				"payload":"INTEGRATE_EXAMPLE3"
+      				}
+    			]
+  			}
+		};
+
+		return buttons;
+	},
+
+	// Calculus Quick replies end.
+
+	// Computer science utils
+
+	// Quick replies for Extended Euclidean Algorithm      
+	xgcdEx: function(recipient) {
+		var buttons = {
+  			"recipient":{
+   				"id": recipient
+  			},
+
+  			"message":{
+    			"text":"With the XGCD command, you can find the Extended Euclidean Algorithm between 2 numbers. (Y)\n" +
+              	"\n" +
+              	"Try a quick example ;) :",
+    			"quick_replies":[
+      				{
+        				"content_type":"text",
+        				"title":"Xgcd: 9,3",
+        				"payload":"XGCD_EXAMPLE0"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Xgcd: 4,5",
+        				"payload":"XGCD_EXAMPLE1"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Xgcd: 36,12",
+        				"payload":"XGCD_EXAMPLE2"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"Xgcd: 9,5",
+        				"payload":"XGCD_EXAMPLE3"
+      				}
+    			]
+  			}
+		};
+
+		return buttons;
+	},
+
+	// Quick Replies for tobinary command
+	tobinaryEx: function(recipient) {
+		var buttons = {
+  			"recipient":{
+   				"id": recipient
+  			},
+
+  			"message":{
+    			"text":"With tobinary command you can convert any integer to binary 👌\n" +
+              	"\n" +
+              	"Try a quick example ;) :",
+    			"quick_replies":[
+      				{
+        				"content_type":"text",
+        				"title":"tobinary: 150",
+        				"payload":"TO_BINARY0"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"tobinary: 45",
+        				"payload":"TO_BINARY1"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"tobinary: 32",
+        				"payload":"TO_BINARY2"
+      				},
+      				{
+        				"content_type":"text",
+        				"title":"tobinary: 16",
+        				"payload":"TO_BINARY3"
       				}
     			]
   			}
