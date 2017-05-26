@@ -10,6 +10,14 @@ var request = require('request');
 var fs = require('file-system');
 var http = require('http');
 var download = require('download-file');
+var algebra = require('algebra.js');
+var Algebrite = require('algebrite');
+var async = require('async');
+var tools = require("./quickReplies.js");
+var menu = require("./menu.js");
+var variables = require("./variables.js");
+
+var wait = require('wait-promise');
 
 if (process.env.NODE_ENV !== 'production') {
 require('dotenv').config()
@@ -142,25 +150,20 @@ String.prototype.replaceAll = function(str1, str2, ignore) {
       (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
+// Greeting message for first time interaction with the bot.
+// TODO: Multi-locale
 function setupGreetingText(res){
-var messageData = {
-    "greeting":[
-        {
-        "locale":"default",
-        "text":"Welcome to Math on the Fly! Solve your Math with me <3 !"
-        }, {
-        "locale":"en_US",
-        "text":"Welcome to Math on the Fly! Solve your Math with me <3 !"
-        }
-    ]};
-request({
+
+  request({
+
     url: 'https://graph.facebook.com/v2.6/me/messenger_profile',
     qs: { access_token : token },
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    form: messageData
-},
-function (error, response, body) {
+    form: variables.greetingMessage
+  },
+  function (error, response, body) {
+
     if (!error && response.statusCode == 200) {
         // Print out the response body
         res.send(body);
@@ -169,145 +172,49 @@ function (error, response, body) {
         // TODO: Handle errors
         res.send(body);
     }
-});
+  });
 
 }
 
-function quickRepliesGraph(res) {
-var buttons = {
-  "message":{
-    "text":"Pick a color:",
-    "quick_replies":[
-      {
-        "content_type":"text",
-        "title":"Red",
-        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-      },
-      {
-        "content_type":"text",
-        "title":"Green",
-        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
-      }
-    ]
-  }
-};
-request({
+function quickReplies(res, buttons) {
+
+  request({
+
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token : token },
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     form: buttons
-},
-function (error, response, body) {
+  },
+  function (error, response, body) {
+
     if (!error && response.statusCode == 200) {
-        // Print out the response body
-        res.send(body);
-        console.log("Test");
+        console.log(response);
 
     } else { 
-        // TODO: Handle errors
-        res.send(body);
-        console.log("Test");
+        console.log(body);
     }
-});
+  });
 }
 
 // Persistent Menu For Messenger
 function setupPersistentMenu(res){
-var messageData = 
-    {"persistent_menu":[
-        {
-        "locale":"default",
-        "composer_input_disabled":false,
-        "call_to_actions":[
-            {
-            "title":"Help",
-            "type":"nested",
-            "call_to_actions":[
-                {
-                "title":"Commands 1",
-                "type":"nested",
-                "call_to_actions":[
-                  {
-                  "title":"Graph",
-                  "type":"postback",
-                  "payload": "GRAPH_COMMAND"
-                  },
-                  {
-                  "title":"Simplify",
-                  "type":"postback",
-                  "payload": "SIMPLIFY_COMMAND"
-                  },
-                  {
-                  "title":"Derivate",
-                  "type":"postback",
-                  "payload": "DERIVATE_COMMAND"
-                  },
-                  {
-                  "title":"GCD",
-                  "type":"postback",
-                  "payload": "GCD_COMMAND"
-                  },
-                ],
-                },
-                {
-                "title":"Commands 2",
-                "type":"nested",
-                "call_to_actions":[
-                  {
-                  "title":"XGCD",
-                  "type":"postback",
-                  "payload": "XGCD_COMMAND"
-                  },
-                  {
-                  "title":"LCM",
-                  "type":"postback",
-                  "payload": "LCM_COMMAND"
-                  },
-                  {
-                  "title":"Convert",
-                  "type":"postback",
-                  "payload": "CONVERT_COMMAND"
-                  },
-                ]
-                },
-                {
-                "title":"How To Use",
-                "type":"postback",
-                "payload":"HOW_TO_USE_PAYLOAD"
-                }
-            ]
-            },
-            {
-            "type":"postback",
-            "title":"Get Started",
-            "payload":"getstarted"
-            },
-            {
-            "type":"web_url",
-            "title":"Visit website ",
-            "url":"https://devpost.com/software/math-on-the-fly",
-            "webview_height_ratio":"full"
-            }
-        ]
-        }
-    ]};  
-// Start the request
+
 request({
     url: "https://graph.facebook.com/v2.6/me/messenger_profile",
     qs: { access_token : token },
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    form: messageData
+    form: menu.persistentMenu
 },
 function (error, response, body) {
     if (!error && response.statusCode == 200) {
-        // Print out the response body
-        res.send(body);
+ 
+        console.log(response);
 
     } else { 
-        // TODO: Handle errors
-        res.send(body);
+
+        console.log(body);
     }
 });
 
@@ -330,11 +237,11 @@ request({
 function (error, response, body) {
     if (!error && response.statusCode == 200) {
         // Print out the response body
-        res.send(body);
+        console.log(response);
 
     } else { 
         // TODO: Handle errors
-        res.send(body);
+        console.log(body);
     }
 });
 }
@@ -347,64 +254,48 @@ app.get('/setup',function(req,res){
     setupGreetingText(res);
 });
 
-function doGraph(action) {
-  if (checkErrorImg(action)){
-
-          replyToSender(sender, "This is not allowed");
-
-        } else {
-
-          var equation = action.replaceAll("+", "%2B");
-          var fEquation = equation.replaceAll("^", "%5E").trim();
-          var eq = fEquation.replaceAll("(", "%28").trim();
-          var eq1 = eq.replaceAll(")", "%29").trim();
-          var eq2 = eq1.replaceAll(" ", "%20").trim();
-
-          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ eq2.trim() +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
-          replyToSender(sender, "Here is your graph for: " + action);
-          replyToSenderImage(sender, url.trim());
-
-        }
-}
 
 function receivedPostback(res,event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfMessage = event.timestamp;
     var payload = event.postback.payload;
+    var replies = tools;
 
     switch(payload)
     {
         case 'getstarted':
-            replyToSender(sender, "Hello, I am Math on the go. A bot that can help you solving math problems :)\n" +
-              "\n" +
-              "You can start deal with me with a simple greeting like 'Hey', 'Hello' <3\n"+
-              "\n" +
-              "Or, you can start with a simple example: Try the following problem: graph: x^2\n"+
-              "\n"+
-              "If you need any help, type the following command 'help'");
-         
+            
+            quickReplies(res, replies.getStartedEx(senderID)); 
             break;
 
         case 'GRAPH_COMMAND':
-            replyToSender(sender, "With the graph command you can graph any equation ;)\n" +
-              "\n"+
-              "For example, you can execute the following command to graph a parabola 'graph: x^2' :D");
-            quickRepliesGraph(res);
+            quickReplies(res, replies.graphEx(senderID)); 
             break;
 
-        case 'GRAPH_COMMAND':
-            replyToSender(sender, "With the graph command you can graph any equation ;)\n" +
-              "\n"+
-              "For example, you can execute the following command to graph a parabola 'graph: x^2' :D");
+        case 'SIMPLIFY_COMMAND':
+            quickReplies(res, replies.simplifyEx(senderID));
             break;
+
+        case 'DERIVATE_COMMAND':
+            quickReplies(res, replies.derivateEx(senderID));
+            break;
+
+        case 'GCD_COMMAND':
+            quickReplies(res, replies.gcdEx(senderID));
+            break;
+
+        case 'XGCD_COMMAND':
+            quickReplies(res, replies.xgcdEx(senderID));
+            break;
+
+        case 'INTEGRAL_COMMAND':
+            quickReplies(res, replies.integralEx(senderID));
+            break;
+
 
         default :
-            replyToSender(sender, "Hello, I am Math on the go. A bot that can help you solving math problems :)\n" +
-              "\n" +
-              "You can start deal with me with a simple greeting like 'Hey', 'Hello' <3\n"+
-              "\n" +
-              "Or, you can start with a simple example: Try the following problem: graph: x^2");
+            quickReplies(res, replies.getStartedEx(senderID));
         break;
     }
 
@@ -429,9 +320,6 @@ app.post('/webhook/', function (req, res) {
     event = req.body.entry[0].messaging[i];
 
     sender = event.sender.id;
-
-
-    
 
     try {
 
@@ -474,7 +362,7 @@ app.post('/webhook/', function (req, res) {
 
                     try {
 
-                      replyToSender(sender, "Answer Is: " + math.eval(final));
+                      replyToSender(sender, "Answer Is: " + math.eval(final).replace(/\*/g, '%'));
 
                     } catch (e) {
 
@@ -517,7 +405,7 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.simplify(action[1]));
+          replyToSender(sender, "Answer Is: " + math.simplify(action[1]).toString());
 
         } catch(err){
 
@@ -533,7 +421,7 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.complex(action[1]));
+          replyToSender(sender, "Answer Is: " + math.complex(action[1]).toString());
 
         } catch(err) {
 
@@ -552,7 +440,7 @@ app.post('/webhook/', function (req, res) {
 
           lcm = input.split(",");
           
-          replyToSender(sender, "The LCM Is: " + math.lcm(lcm[0],lcm[1]));
+          replyToSender(sender, "The LCM Is: " + math.lcm(lcm[0],lcm[1]).toString());
 
         } catch(err) {
 
@@ -569,7 +457,7 @@ app.post('/webhook/', function (req, res) {
 
           values = txt.split(",");
 
-          replyToSender(sender, "The GCD Is: " + math.gcd(values[0],values[1]));
+          replyToSender(sender, "The GCD Is: " + math.gcd(values[0],values[1]).toString());
 
         } catch(err) {
 
@@ -586,7 +474,7 @@ app.post('/webhook/', function (req, res) {
 
           values = txt.split(",");
 
-          replyToSender(sender, "The Extended Euclidean Algorithm Is: " + math.xgcd(values[0],values[1]));
+          replyToSender(sender, "The Extended Euclidean Algorithm Is: " + math.xgcd(values[0],values[1]).toString());
 
         } catch(err) {
 
@@ -602,7 +490,7 @@ app.post('/webhook/', function (req, res) {
           units = action[1].toString();
           console.log(units);
 
-          replyToSender(sender, "Answer Is: " + math.eval(units));
+          replyToSender(sender, "Answer Is: " + math.eval(units).toString());
 
         } catch(err) {
 
@@ -617,7 +505,7 @@ app.post('/webhook/', function (req, res) {
 
           try {
 
-            replyToSender(sender, "The Derivative Is: " + math.derivative(action[1], "x"));
+            replyToSender(sender, "The Derivative Is: " + math.derivative(action[1].trim(), "x").toString());
 
           } catch(err) {
 
@@ -625,7 +513,20 @@ app.post('/webhook/', function (req, res) {
 
           }
         
+      }
 
+      else if (action[0].toLowerCase().trim() == "integrate") {
+
+        try {
+
+          var integral = Algebrite.eval('integral(' + action[1].toString().trim() + ')').toString();
+          replyToSender(sender, "The answer is: " + integral + " + C");
+        }
+
+        catch (err) {
+          console.log(err);
+          replyToSender(sender, "error");
+        }
       }
 
       // To evaluate basic math operations
@@ -633,7 +534,7 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.eval(text));
+          replyToSender(sender, "Answer Is: " + math.eval(text).toString());
 
         } catch(err) {
 
@@ -660,6 +561,22 @@ app.post('/webhook/', function (req, res) {
           replyToSender(sender, "Here is your graph for: " + action[1]);
           replyToSenderImage(sender, url.trim());
 
+        }
+      }
+
+      else if (action[0].toLowerCase().trim() == "solve") {
+
+        try {
+
+          var eq = algebra.parse(action[1].trim());
+
+          var x = eq.solveFor("x");
+
+          replyToSender(sender, "x = " + x.toString());          
+
+        } catch (err) {
+
+          replyToSender(sender, "Error");
         }
       }
 
@@ -695,11 +612,33 @@ app.post('/webhook/', function (req, res) {
           switch (payload) {
 
             case "getstarted":
-              receivedPostback(res,event);
+              receivedPostback(res, event);
               break;
 
             case "GRAPH_COMMAND":
               receivedPostback(res, event);
+              break;
+
+            case "SIMPLIFY_COMMAND":
+              receivedPostback(res, event);
+              break;
+
+            case "DERIVATE_COMMAND":
+              receivedPostback(res, event);
+              break;
+
+            case "GCD_COMMAND":
+              receivedPostback(res, event);
+              break;
+
+            case "XGCD_COMMAND":
+              receivedPostback(res, event);
+              break;
+
+            case "INTEGRAL_COMMAND":
+              receivedPostback(res, event);
+              break;
+
 
             default:
               
