@@ -1,8 +1,8 @@
-var tools = require("./quickReplies.js"),
-	request = require('request'),
-	variables = require("./variables.js"),
-	token = process.env.FACEBOOK_TOKEN,
-	menu = require("./menu.js");
+var tools = require("./quickReplies.js");
+var request = require('request');
+var variables = require("./variables.js");
+var token = process.env.FACEBOOK_TOKEN;
+var menu = require("./menu.js");
 
 var self = module.exports = {
 
@@ -73,7 +73,8 @@ var self = module.exports = {
 
     	switch(payload)
     	{
-        case 'getstarted':  
+        case 'getstarted':
+        	console.log("Test)");
             self.quickReplies(res, replies.getStartedEx(senderID)); 
             break;
 
