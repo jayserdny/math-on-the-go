@@ -115,6 +115,10 @@ var self = module.exports = {
             self.quickReplies(res, replies.tobinaryEx(senderID));
             break;
 
+        case 'CONVERT_COMMAND':
+              self.quickReplies(res, replies.convertEx(senderID));
+              break;
+
 
         default :
             self.quickReplies(res, replies.getStartedEx(senderID));
