@@ -125,20 +125,25 @@ app.post('/webhook/', function (req, res) {
                     try {
 
                       functions.replyToSender(res, sender, "Answer Is: " + math.eval(final).replace(/\*/g, '%'));
+                      res.end();
 
                     } catch (e) {
 
                       functions.replyToSender(res, sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
+                      res.end();
 
                       }
 
-                  } catch (e) { console.log(e)}
+                  } catch (e) { 
+                    console.log(e);
+                    res.end();
+                  }
                     
                 } else {
                   console.log("error");
                 }
               })
-            request.end();
+            
             }
           
         });
@@ -163,8 +168,10 @@ app.post('/webhook/', function (req, res) {
         }, (err) => {
           if (err,result) {
             console.log(err);
+            res.end();
           } else {
             console.log(result);
+            res.end();
           }
           });
     
