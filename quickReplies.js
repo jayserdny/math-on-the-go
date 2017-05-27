@@ -427,5 +427,46 @@ module.exports = {
 		};
 
 		return buttons;
-	}
+	},
+
+  // Computer Science quickreplies end
+
+  // MISC Quickreplies
+  convertEx: function(recipient) {
+    var buttons = {
+        "recipient":{
+          "id": recipient
+        },
+
+        "message":{
+          "text":"With the convert command, you can convert from one unit to another one 👌\n" +
+                "\n" +
+                "Try a quick example ;) :",
+          "quick_replies":[
+              {
+                "content_type":"text",
+                "title":"Convert: 150 m to km",
+                "payload":"CONVERT_EXAMPLE0"
+              },
+              {
+                "content_type":"text",
+                "title":"Convert: 45 inch to cm",
+                "payload":"CONVERT_EXAMPLE1"
+              },
+              {
+                "content_type":"text",
+                "title":"Convert: 2 km to m",
+                "payload":"CONVERT_EXAMPLE2"
+              },
+              {
+                "content_type":"text",
+                "title":"Convert: 2 lb to kg",
+                "payload":"CONVERT_EXAMPLE3"
+              }
+          ]
+        }
+    };
+
+    return buttons;
+  },
 };
