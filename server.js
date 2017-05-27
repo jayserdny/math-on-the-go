@@ -15,8 +15,6 @@ var app = require('express')(),
     menu = require("./menu.js"),
     variables = require("./variables.js"),
     functions = require("./functions.js"),
-    replyToSender = functions.replyToSender,
-    replyToSenderImage = functions.replyToSenderImage,
     path = require('path'),
     http = require("http"),
     port = process.env.PORT || 1881;
@@ -117,11 +115,11 @@ app.post('/webhook/', function (req, res) {
 
                     try {
 
-                      replyToSender(sender, "Answer Is: " + math.eval(final).replace(/\*/g, '%'));
+                      functions.replyToSender(sender, "Answer Is: " + math.eval(final).replace(/\*/g, '%'));
 
                     } catch (e) {
 
-                      replyToSender(sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
+                      functions.replyToSender(sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
 
                       }
 
@@ -160,11 +158,11 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + Algebrite.simplify(action[1]).toString());
+          functions.replyToSender(sender, "Answer Is: " + Algebrite.simplify(action[1]).toString());
 
         } catch(err){
 
-          replyToSender(sender, "I can't simplify this :(. Please try the following one: 10/4")
+          functions.replyToSender(sender, "I can't simplify this :(. Please try the following one: 10/4")
         }
       
       }
@@ -176,11 +174,11 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.complex(action[1]).toString());
+          functions.replyToSender(sender, "Answer Is: " + math.complex(action[1]).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "This is not a complex equation. Try this one: 2i + 5i");
+          functions.replyToSender(sender, "This is not a complex equation. Try this one: 2i + 5i");
 
         }
 
@@ -195,11 +193,11 @@ app.post('/webhook/', function (req, res) {
 
           lcm = input.split(",");
           
-          replyToSender(sender, "The LCM Is: " + math.lcm(lcm[0],lcm[1]).toString());
+          functions.replyToSender(sender, "The LCM Is: " + math.lcm(lcm[0],lcm[1]).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "Can't calculate the LCM with given values. Please, try the following: 4, 6")
+          functions.replyToSender(sender, "Can't calculate the LCM with given values. Please, try the following: 4, 6")
         }
       }
 
@@ -212,11 +210,11 @@ app.post('/webhook/', function (req, res) {
 
           values = txt.split(",");
 
-          replyToSender(sender, "The GCD Is: " + math.gcd(values[0],values[1]).toString());
+          functions.replyToSender(sender, "The GCD Is: " + math.gcd(values[0],values[1]).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "Can't calculate the GCD with given values. Please, try the following: 4, 6")
+          functions.replyToSender(sender, "Can't calculate the GCD with given values. Please, try the following: 4, 6")
         }
       }
 
@@ -229,11 +227,11 @@ app.post('/webhook/', function (req, res) {
 
           values = txt.split(",");
 
-          replyToSender(sender, "The Extended Euclidean Algorithm Is: " + math.xgcd(values[0],values[1]).toString());
+          functions.replyToSender(sender, "The Extended Euclidean Algorithm Is: " + math.xgcd(values[0],values[1]).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "Can't calculate the Extended Euclidean Algorithm with given values. Please, try the following: 4, 6")
+          functions.replyToSender(sender, "Can't calculate the Extended Euclidean Algorithm with given values. Please, try the following: 4, 6")
         }
       }
 
@@ -245,11 +243,11 @@ app.post('/webhook/', function (req, res) {
           units = action[1].toString();
           console.log(units);
 
-          replyToSender(sender, "Answer Is: " + math.eval(units).toString());
+          functions.replyToSender(sender, "Answer Is: " + math.eval(units).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "Can't convert this kind of unit. Please, try the following: 2 inch, cm")
+          functions.replyToSender(sender, "Can't convert this kind of unit. Please, try the following: 2 inch, cm")
         }
       }
 
@@ -260,11 +258,11 @@ app.post('/webhook/', function (req, res) {
 
           try {
 
-            replyToSender(sender, "The Derivative Is: " + math.derivative(action[1].trim(), "x").toString());
+            functions.replyToSender(sender, "The Derivative Is: " + math.derivative(action[1].trim(), "x").toString());
 
           } catch(err) {
 
-            replyToSender(sender, "You can't derivate this function. Try this one: 2x^2 + 5x + 2")
+            functions.replyToSender(sender, "You can't derivate this function. Try this one: 2x^2 + 5x + 2")
 
           }
         
@@ -275,12 +273,12 @@ app.post('/webhook/', function (req, res) {
         try {
 
           var integral = Algebrite.eval('integral(' + action[1].toString().trim() + ')').toString();
-          replyToSender(sender, "The answer is: " + integral + " + C");
+          functions.replyToSender(sender, "The answer is: " + integral + " + C");
         }
 
         catch (err) {
           console.log(err);
-          replyToSender(sender, "error");
+          functions.replyToSender(sender, "error");
         }
       }
 
@@ -298,7 +296,7 @@ app.post('/webhook/', function (req, res) {
         y = "y";
 
         try {
-          replyToSender(sender, "The answer is: " + Algebrite.defint(eqfinal,y,0,x,lower,upper));
+          functions.replyToSender(sender, "The answer is: " + Algebrite.defint(eqfinal,y,0,x,lower,upper));
         } catch (err) {
 
           console.log(err);
@@ -311,11 +309,11 @@ app.post('/webhook/', function (req, res) {
 
         try {
 
-          replyToSender(sender, "Answer Is: " + math.eval(text).toString());
+          functions.replyToSender(sender, "Answer Is: " + math.eval(text).toString());
 
         } catch(err) {
 
-          replyToSender(sender, "I can't compute this equation. Instead, try this: 15 * 4 + 2");
+          functions.replyToSender(sender, "I can't compute this equation. Instead, try this: 15 * 4 + 2");
         }
       }
 
@@ -324,7 +322,7 @@ app.post('/webhook/', function (req, res) {
 
         if (functions.checkErrorImg(action)){
 
-          replyToSender(sender, "This is not allowed");
+          functions.replyToSender(sender, "This is not allowed");
 
         } else {
 
@@ -335,8 +333,8 @@ app.post('/webhook/', function (req, res) {
           var eq2 = eq1.replaceAll(" ", "%20").trim();
 
           url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ eq2.trim() +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
-          replyToSender(sender, "Here is your graph for: " + action[1]);
-          replyToSenderImage(sender, url.trim());
+          functions.replyToSender(sender, "Here is your graph for: " + action[1]);
+          functions.replyToSenderImage(sender, url.trim());
 
         }
       }
@@ -349,18 +347,18 @@ app.post('/webhook/', function (req, res) {
 
           var x = eq.solveFor("x");
 
-          replyToSender(sender, "x = " + x.toString());          
+          functions.replyToSender(sender, "x = " + x.toString());          
 
         } catch (err) {
 
-          replyToSender(sender, "Error");
+          functions.replyToSender(sender, "Error");
         }
       }
 
       // To get help with commands.
       else if (text.toLowerCase() == "help") {
 
-        replyToSender(sender, variables.commands());
+        functions.replyToSender(sender, variables.commands());
 
       }
 
@@ -371,11 +369,11 @@ app.post('/webhook/', function (req, res) {
 
         try {
           
-          replyToSender(sender, action[1] + " to binary is " + binary);
+          functions.replyToSender(sender, action[1] + " to binary is " + binary);
 
         } catch (err) {
 
-          replyToSender(sender, "Can't be converted");
+          functions.replyToSender(sender, "Can't be converted");
         }
       }
 
@@ -383,7 +381,7 @@ app.post('/webhook/', function (req, res) {
 
         // Call function to connect to ai responses.
         apiai.on('response', (response) => {
-          replyToSender(sender, response.result.fulfillment.speech);
+          functions.replyToSender(sender, response.result.fulfillment.speech);
         });
 
         apiai.on('error', (error) => {
@@ -444,6 +442,7 @@ app.post('/webhook/', function (req, res) {
               break;
 
             default:
+              functions.receivedPostback(res, event);
               
             break; 
           }
@@ -451,7 +450,7 @@ app.post('/webhook/', function (req, res) {
     }
          
           
-    }
+  }
   
 
   res.sendStatus(200);
