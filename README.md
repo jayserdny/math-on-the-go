@@ -17,15 +17,7 @@ I am proud of developing my first Facebook Messenger bot. I never thought that t
 I have learned how to configure a Facebook Messenger bot by doing this app and how to use mathjs library. I also learned that the limit of programming is yourself. If you think you can't do something, is because you have not tried hard.
 
 ##Beta Testers?
-If you want to beta test this bot, please send me your Facebook username's id to: jayser.mendez@stu.bcc.cuny.edu
-I still need to wait for Facebook to approve this bot to be used by everyone.
-
-Or, login to Facebook with the following credentials:
-
-Email: mathtestapp@outlook.com
-Password: Testapp123
-
-Then go to messages and open the only message there :)
+Facebook has approved the bot :) Go straight and test the bot ;)
 
 ##Commands
 
@@ -55,6 +47,12 @@ xgcd: 4,6
 **To convert from an unit to another unit:**
 convert: 5 m to km
 
+**To solve an equation for X:**
+solve: x-1 = 0
+
+**To calculate an indefinite integral:**
+integrate: x^2
+
 **BETA: Try to capture an image with an only simple math operation. For example, something simple as 5+5 and the program will tell you the answer. I am working to support more operations with the image recognition.**
 
 **To get all this command on the chat, just write help**
@@ -63,3 +61,5 @@ To do a simple Math operation, you don't need any command, just tell it right aw
 
 ## What's next for Math on the fly
 Solve more operations using image recognition! Stay tuned!
+
+Rename the project to something more general. I want to cover more topics such as Chemistry, Biology, Math, Physics, etc...
