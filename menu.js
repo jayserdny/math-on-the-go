@@ -79,6 +79,17 @@ module.exports.persistentMenu =
                             "payload": "TOBINARY_COMMAND"
                         },
                       ]
+                    },
+                    {
+                      "title":"Misc",
+                      "type":"nested",
+                      "call_to_actions":[
+                        {
+                            "title":"Convert Units",
+                            "type":"postback",
+                            "payload": "CONVERT_COMMAND"
+                        }
+                      ]
                     }
                 ]
                 },
