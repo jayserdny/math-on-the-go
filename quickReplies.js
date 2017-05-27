@@ -13,8 +13,8 @@ module.exports = {
               "\n" +
               "Or, you can start with a simple example: Try the following problem: graph: x^2\n"+
               "\n"+
-              "Take in mind I am running in a free server. If I hang out, please allow me a moment ;)"+
-              "\n"+
+              "Take in mind I am running in a free server. If I hang out, please allow me a moment ;)\n"+
+              "\n" +
               "If you need any help, type the following command 'help'\n" + 
               "\n" +
               "Try a quick example ;) :",
