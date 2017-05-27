@@ -55,12 +55,14 @@ var self = module.exports = {
   		function (error, response, body) {
 
     	if (!error && response.statusCode == 200) {
-      	  console.log(response);
+      	  console.log("ok");
+      	  res.end();
 
     	} else { 
-       	 console.log(body);
+       	 console.log("error");
     	}
   		});
+  		
 	},
 
 	// Postback for quickreplies function
@@ -74,7 +76,6 @@ var self = module.exports = {
     	switch(payload)
     	{
         case 'getstarted':
-        	console.log("Test)");
             self.quickReplies(res, replies.getStartedEx(senderID)); 
             break;
 
@@ -123,7 +124,7 @@ var self = module.exports = {
 	},
 
 	// Function to send plain message to the bot
-	replyToSender: function(sender, text) {
+	replyToSender: function(res,sender, text) {
   		messageData = {
    		 text : text
   	};
@@ -138,19 +139,18 @@ var self = module.exports = {
     	}
 
  	}, function(error, response, body) {
-       	if (error) {
+       	if (!error && response.statusCode == 200) {
+      	  console.log("ok");
+      	  res.end();
 
-         	console.log('Error sending message: ', error);
-
-       	} else if (response.body.error) {
-
-         	console.log('Error: ', response.body.error);
-       	}
+    	} else { 
+       	 console.log("error");
+    	}
      	});
 	},
 
 	// Function to retrive image from bot
-	replyToSenderImage: function(sender, image) {
+	replyToSenderImage: function(res,sender, image) {
 
   		request({
     		url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -169,15 +169,16 @@ var self = module.exports = {
     		}
 
   		}, function(error, response, body) {
-       			if (error) {
 
-         			console.log('Error sending message: ', error);
+       			if (!error && response.statusCode == 200) {
+      	  			console.log("ok");
+      	  			res.end();
 
-       			} else if (response.body.error) {
-
-         			console.log('Error: ', response.body.error);
-       			}
+    			} else { 
+       	 			console.log("error");
+    			}
      	});
+     	
 	},
 
 	// FACEBOOK SETUP AREA
@@ -198,10 +199,12 @@ var self = module.exports = {
     		if (!error && response.statusCode == 200) {
        		
         		res.send(response.body);
+        		res.end();
 
     		} else { 
         		
         		res.send(body);
+        		res.end();
     		}
   		});
 
@@ -220,11 +223,13 @@ var self = module.exports = {
 		function (error, response, body) {
     		if (!error && response.statusCode == 200) {
  
-        		res.send(response);
+        		res.send(response.body);
+        		res.end();
 
     		} else { 
 
         		res.send(body);
+        		res.end();
    			}
 		});
 
@@ -251,12 +256,15 @@ var self = module.exports = {
     		if (!error && response.statusCode == 200) {
 
        		 	res.send(response);
+       		 	res.end();
 
     		} else { 
     
         		res.send(body);
+        		res.end();
     		}
 		});
+		
 	}
 
 	// FACEBOOK SETUP END
