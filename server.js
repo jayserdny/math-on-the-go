@@ -160,7 +160,14 @@ app.post('/webhook/', function (req, res) {
 
       apiai = apiaiApp.textRequest(text, {
           sessionId: 'natural_language'
-        });
+        }, (err) => {
+          if (err,result) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+          });
+    
       
 
       // To simplify equations and fractions
@@ -472,6 +479,7 @@ app.post('/webhook/', function (req, res) {
 
 app.get('/', function (req, res) {
   console.log("Working OK");
+  res.end();
 });
 
 app.listen(port, function(){
