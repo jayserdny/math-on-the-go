@@ -1,23 +1,23 @@
 // Externals Libraries
 
-var app = require('express')(),
-    bodyParser  = require('body-parser'),
-    request = require('request'),
-    math = require('mathjs'),
-    apiaiApp = require('apiai')(process.env.API_AI_API),
-    express = require('express'),
-    request = require('request'),
-    fs = require('file-system'),
-    http = require('http'),
-    download = require('download-file'),
-    algebra = require('algebra.js'),
-    Algebrite = require('algebrite'),
-    menu = require("./menu.js"),
-    variables = require("./variables.js"),
-    functions = require("./functions.js"),
-    path = require('path'),
-    http = require("http"),
-    port = process.env.PORT || 1881;
+var app = require('express')();
+var bodyParser  = require('body-parser');
+var request = require('request');
+var math = require('mathjs');
+var apiaiApp = require('apiai')(process.env.API_AI_API);
+var express = require('express');
+var request = require('request');
+var fs = require('file-system');
+var http = require('http');
+var download = require('download-file');
+var algebra = require('algebra.js');
+var Algebrite = require('algebrite');
+var menu = require("./menu.js");
+var variables = require("./variables.js");
+var functions = require("./functions.js");
+var path = require('path');
+var http = require("http");
+var port = process.env.PORT || 1881;
 
 
 if (process.env.NODE_ENV !== 'production') {
