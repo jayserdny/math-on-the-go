@@ -425,7 +425,5 @@ module.exports = {
 		};
 
 		return buttons;
-	},
-
-
+	}
 };
