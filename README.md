@@ -56,9 +56,9 @@ integrate: x^2
 **BETA: Solve using images:**
 Write in a document the following examples and snap them without any other text:
 
-Graph: x^2
-Solve: x + 2 = 0
-Simplify 10/4
+- Graph: x^2
+- Solve: x + 2 = 0
+- Simplify 10/4
 
 **Take in mind that sometimes it will not work because it is still on beta phase.**
 
