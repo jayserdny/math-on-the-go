@@ -53,7 +53,14 @@ solve: x-1 = 0
 **To calculate an indefinite integral:**
 integrate: x^2
 
-**BETA: Try to capture an image with an only simple math operation. For example, something simple as 5+5 and the program will tell you the answer. I am working to support more operations with the image recognition.**
+**BETA: Solve using images:**
+Write in a document the following examples and snap them without any other text:
+
+Graph: x^2
+Solve: x + 2 = 0
+Simplify 10/4
+
+**Take in mind that sometimes it will not work because it is still on beta phase.**
 
 **To get all this command on the chat, just write help**
 
