@@ -16,10 +16,10 @@ I am proud of developing my first Facebook Messenger bot. I never thought that t
 ## What I learned
 I have learned how to configure a Facebook Messenger bot by doing this app and how to use mathjs library. I also learned that the limit of programming is yourself. If you think you can't do something, is because you have not tried hard.
 
-##Beta Testers?
+## Beta Testers?
 Facebook has approved the bot :) Go straight and test the bot ;)
 
-##Commands
+## Commands
 
 Here is a list of examples of available commands for this bot:
 
