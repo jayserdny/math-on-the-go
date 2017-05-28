@@ -103,6 +103,8 @@ app.post('/webhook/', function (req, res) {
 
         var results = "";
  
+        // TODO: Create temporary files instead of re-write the same one.
+        // If two users try to create a file at the same time, it can be a conflict.
         download(imageURL, options, function(err){
 
           if (err) {
@@ -113,7 +115,7 @@ app.post('/webhook/', function (req, res) {
 
             const body = {"url":"https://mathserver.herokuapp.com/public/image.png"};
 
-            var cognitiveUrl = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr?language=unk&detectOrientation =true"
+            var cognitiveUrl = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr?language=unk&detectOrientation=true"
 
             request({
               url: cognitiveUrl,
@@ -126,7 +128,14 @@ app.post('/webhook/', function (req, res) {
             function (error, body, result) {
 
               if (result) {
-                var words = result.regions[0].lines[0].words;
+                try {
+
+                  var words = result.regions[0].lines[0].words;
+
+                } catch (err) {
+
+                  functions.replyToSender(res, sender, "I am getting an error. My developer is working to fix me :)");
+                }
                 var arranged = [];
                 var equation = [];
 
@@ -168,14 +177,13 @@ app.post('/webhook/', function (req, res) {
                 else if (arranged[0].toLowerCase() == "solve:") {
 
                   try {
-                    console.log(equation);
+
                     var eq0 = equation.join("").replaceAll("A", "^");
-                    console.log(eq0);
                     functions.replyToSender(res, sender, "Here is your answer");
 
                     try {
+
                       var eq1 = eq0.replaceAll("χ", "x");
-                      console.log(eq1);
 
                     } catch (e) {}
 
@@ -201,7 +209,6 @@ app.post('/webhook/', function (req, res) {
                 } catch (err) {}
 
                 var final = equation.join("");
-                console.log(final);
 
                 var result = Algebrite.simplify(final);
 
@@ -210,16 +217,33 @@ app.post('/webhook/', function (req, res) {
               }
 
 
-                else {
-                  console.log(arranged);
-                  functions.replyToSender(res, sender, "error")
+              else {
+
+                try {
+
+                  var solve = arranged.join("");
+                  console.log(solve);
+                  functions.replyToSender(res, sender, "Answer Is: " + math.eval(solve));
+
+                } catch (error) {
+
+                  functions.replyToSender(res, sender, "Please try to use an image without any other text.\n" +
+                    "This feature is still beta and may not work correctly.");
                 }
+
+                
+              }
                 
                 
 
-              } else { 
-                console.log("error");
+              } 
+
+              else {
+
+                functions.replyToSender(res, sender, "Please try to use an image without any other text.\n" +
+                    "This feature is still beta and may not work correctly.");
               }
+
             });
             
             }
@@ -230,9 +254,8 @@ app.post('/webhook/', function (req, res) {
     }
 
     } catch(e){}
-    //Checking for attachments
-    
-
+  
+    // Check if the event is a message
     if (event.message && event.message.text) {
       
       text = event.message.text;
