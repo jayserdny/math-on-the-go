@@ -17,7 +17,6 @@ var functions = require("./functions.js");
 var path = require('path');
 var port = process.env.PORT || 8080;
 
-
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
   require('longjohn');
@@ -47,6 +46,10 @@ String.prototype.replaceAll = function(str1, str2, ignore) {
 
     return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),
     (ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+}
+
+getGraph = function(equation) {
+  return "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ equation.trim() +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
 }
 
 
@@ -85,7 +88,7 @@ app.post('/webhook/', function (req, res) {
 
     try {
 
-    image = event.message.attachments[0].payload.url;
+      image = event.message.attachments[0].payload.url;
 
     if (image) {
       //Checking if there are any image attachments 
@@ -108,41 +111,116 @@ app.post('/webhook/', function (req, res) {
 
           } else {
 
-            var url = "https://api.ocr.space/parse/imageurl?apikey="+ process.env.OCR_TOKEN + "&url=https://mathserver.herokuapp.com/public/image.png";
-            request({
-              url: url,
-              json: true
-              }, function (error, response, body) {
+            const body = {"url":"https://mathserver.herokuapp.com/public/image.png"};
 
-                if (!error && response.statusCode === 200) {
+            var cognitiveUrl = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr?language=unk&detectOrientation =true"
+
+            request({
+              url: cognitiveUrl,
+              method: 'POST',
+              headers: {'Content-Type': 'application/json',
+                        "Ocp-Apim-Subscription-Key": process.env.OCR_TOKEN},
+              json: true,
+              body: body
+            },
+            function (error, body, result) {
+
+              if (result) {
+                var words = result.regions[0].lines[0].words;
+                var arranged = [];
+                var equation = [];
+
+                for (var i = 0; i < words.length; i++) {
+
+                  arranged.push(words[i].text);
+
+                }
+
+                for (var i = 1; i < words.length; i++) {
+
+                  equation.push(words[i].text);
+
+                }
+
+                // OCR Detect '^' as 'A'. Replace it here
+
+                var first = equation.join("").replaceAll("A", "^");
+
+                // Sanitize equation to graph it correctly
+
+                var second = first.replaceAll("+", "%2B");
+
+                var third = second.replaceAll("^", "%5E").trim();
+
+                var fourth = third.replaceAll("(", "%28").trim();
+
+                var fith = fourth.replaceAll(")", "%29").trim();
+
+                var final = fith.replaceAll(" ", "%20").trim();
+
+                if (arranged[0].toLowerCase() == "graph:") {
+
+                  functions.replyToSender(res, sender, "Here is your graph");
+                  functions.replyToSenderImage(res, sender, getGraph(final));
+
+                } 
+
+                else if (arranged[0].toLowerCase() == "solve:") {
 
                   try {
-
-                    results = body.ParsedResults[0].ParsedText;
-                    var resultsStr = results.toString();
-                    var final = resultsStr.trim();
+                    console.log(equation);
+                    var eq0 = equation.join("").replaceAll("A", "^");
+                    console.log(eq0);
+                    functions.replyToSender(res, sender, "Here is your answer");
 
                     try {
+                      var eq1 = eq0.replaceAll("χ", "x");
+                      console.log(eq1);
 
-                      functions.replyToSender(res, sender, "Answer Is: " + math.eval(final).replace(/\*/g, '%'));
-                      res.end();
+                    } catch (e) {}
 
-                    } catch (e) {
+                    var eq = algebra.parse(eq1.trim());
 
-                      functions.replyToSender(res, sender, "Please try a valid operation. Also, please try to use a photo without any other text other than basic math.");
-                      res.end();
+                    var x = eq.solveFor("x");
 
-                      }
+                    functions.replyToSender(res, sender, "x = " + x.toString());          
 
-                  } catch (e) { 
-                    console.log(e);
-                    res.end();
+                  } catch (err) {
+
+                    functions.replyToSender(res, sender, "Error");
                   }
-                    
-                } else {
-                  console.log("error");
+
+              }
+
+              else if (arranged[0].toLowerCase() == "simplify:") {
+
+                try {
+
+                  var eq0 = equation.join("").replaceAll("A", "^");
+
+                } catch (err) {}
+
+                var final = equation.join("");
+                console.log(final);
+
+                var result = Algebrite.simplify(final);
+
+                functions.replyToSender(res, sender, result.toString());
+
+              }
+
+
+                else {
+                  console.log(arranged);
+                  functions.replyToSender(res, sender, "error")
                 }
-              })
+                
+                
+
+              } else { 
+                console.log("error");
+              }
+            });
             
             }
           
@@ -356,9 +434,8 @@ app.post('/webhook/', function (req, res) {
           var eq1 = eq.replaceAll(")", "%29").trim();
           var eq2 = eq1.replaceAll(" ", "%20").trim();
 
-          url = "https://www.graphsketch.com/render.php?eqn1_color=1&eqn1_eqn="+ eq2.trim() +"&x_min=-17&x_max=17&y_min=-10.5&y_max=10.5&x_tick=1&y_tick=1&x_label_freq=5&y_label_freq=5&do_grid=0&do_grid=1&bold_labeled_lines=0&bold_labeled_lines=1&line_width=4&image_w=850&image_h=525";
           functions.replyToSender(res, sender, "Here is your graph for: " + action[1]);
-          functions.replyToSenderImage(res, sender, url.trim());
+          functions.replyToSenderImage(res, sender, getGraph(eq2));
 
         }
       }
@@ -462,6 +539,10 @@ app.post('/webhook/', function (req, res) {
               break;
 
             case 'TOBINARY_COMMAND':
+              functions.receivedPostback(res, event);
+              break;
+
+            case 'CONVERT_COMMAND':
               functions.receivedPostback(res, event);
               break;
 
