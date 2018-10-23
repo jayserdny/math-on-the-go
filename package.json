@@ -14,7 +14,7 @@
     "apiai": "^4.0.2",
     "body-parser": "^1.15.1",
     "download-file": "^0.1.5",
-    "express": "4.15.3",
+    "express": "4.15.5",
     "file-system": "^2.2.2",
     "forever": "^0.15.3",
     "longjohn": "^0.2.12",
