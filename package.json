@@ -18,7 +18,7 @@
     "file-system": "^2.2.2",
     "forever": "^0.15.3",
     "longjohn": "^0.2.12",
-    "mathjs": "^3.13.1",
+    "mathjs": "^7.5.1",
     "path": "^0.12.7",
     "request": "^2.72.0"
   },
