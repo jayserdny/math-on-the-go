@@ -16,7 +16,7 @@
     "download-file": "^0.1.5",
     "express": "4.15.3",
     "file-system": "^2.2.2",
-    "forever": "^0.15.3",
+    "forever": "^3.0.4",
     "longjohn": "^0.2.12",
     "mathjs": "^3.13.1",
     "path": "^0.12.7",
